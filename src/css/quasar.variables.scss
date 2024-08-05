@@ -1,0 +1,50 @@
+// Your own variables (that are declared here) and Quasar's own
+// ones will be available out of the box in your .vue/.scss/.sass files
+
+// Poppins Font
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+@font-face {
+  font-family: TTLakes;
+  src: url("./TT Lakes Medium.otf") format("opentype");
+}
+
+$typography-font-family: TTLakes, sans-serif !default;
+
+$body-font-size: 14px !default;
+
+$primary: #1976d2;
+$secondary: #404040;
+$accent: #464646;
+
+// $red: #da5050 !default;
+
+$dark: #121212;
+$dark-page: #121212;
+
+$positive: #21ba45;
+$negative: #fc384d;
+$info: #31ccec;
+$warning: #f2c037;
+
+
+// new theme
+
+$page-color: #181818;
+$red: #D40403;
+$red-neon: #E00201;
+$yellow: #FFDC64;
+$lighter-dark: #242424;
+$border-color: #464646;
+$grey-8: #242424;
+$grey-7: #464646;
+
+
+
+.bg-page-color {
+  background-color: $page-color;
+}
+
+.bg-card-color {
+  background-color: #2F2F2F;
+}

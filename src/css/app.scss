@@ -1,0 +1,565 @@
+// app global css in SCSS form
+@forward './quasar.variables.scss';
+@forward './corners.scss';
+
+body {
+  background: $page-color;
+  color: white;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.q-menu {
+  background-color: $accent;
+  box-shadow: none;
+}
+
+.form-logo {
+  position: absolute;
+  top: -30%;
+  right: 0;
+  left: 0;
+  width: 280px;
+  margin: auto;
+}
+
+.opacity {
+  &-15 {
+    opacity: 15%;
+  }
+
+  &-30 {
+    opacity: 30%;
+  }
+
+  &-60 {
+    opacity: 60%;
+  }
+
+  &-80 {
+    opacity: 80%;
+  }
+}
+
+// text
+.font {
+  &-12 {
+    font-size: 12px !important;
+  }
+
+  &-14 {
+    font-size: 14px !important;
+  }
+
+  &-16 {
+    font-size: 16px !important;
+  }
+
+  &-18 {
+    font-size: 18px !important;
+  }
+
+  &-20 {
+    font-size: 20px !important;
+  }
+
+  &-24 {
+    font-size: 24px !important;
+  }
+
+  &-32 {
+    font-size: 32px !important;
+  }
+
+  &-48 {
+    font-size: 48px !important;
+  }
+
+  &-60 {
+    font-size: 60px !important;
+  }
+
+  &-helvetica {
+    font-family: 'helvetica', 'sans-serif';
+  }
+}
+
+.vertical-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// End text
+
+// margins
+
+.q-my-34 {
+  margin-top: 34px;
+  margin-bottom: 34px;
+}
+
+// End margins
+
+.nav-indicator {
+  display: inline-block;
+  height: 5px;
+  width: 18px;
+  background: #CECECE;
+  transform: skew(-21deg);
+}
+
+// border stuff
+
+.separator-with {
+  &-title {
+    position: relative;
+    background: $border-color;
+    height: 2px;
+
+    span {
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      background: $page-color;
+      padding: 0 10px;
+    }
+  }
+
+  &-button {
+    position: relative;
+    background: $border-color;
+    height: 2px;
+
+    button {
+      position: absolute;
+      top: -15px;
+      left: 30px;
+      background: $page-color;
+      padding: 0 10px;
+    }
+
+  }
+}
+
+.bordered-card {
+  border: 3px solid $border-color;
+  position: relative;
+
+  &-red {
+    border: 3px solid $red;
+    box-shadow: 0 0 5px 0 $red-neon !important;
+  }
+
+  &-white {
+    border: 1.5px solid white;
+    // box-shadow: 0 0 3px 0 white !important;
+  }
+
+  &-label {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: $page-color;
+    padding: 0 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &-btn {
+    position: absolute;
+    top: -20px;
+    right: 20px;
+    background: $page-color;
+    padding: 0 10px;
+  }
+}
+
+.q-field--outlined .q-field__control {
+  border-color: $border-color;
+
+  &:before {
+    border-color: $border-color;
+    border-width: 2px;
+    border-radius: 0;
+  }
+}
+
+.border-color-grey {
+  border: 3px solid $border-color;
+}
+
+// end border stuff
+
+// neon colors
+.border-red-neon {
+  &-1 {
+    border: 1px $red solid;
+    box-shadow: 0 0 10px 0 $red-neon;
+  }
+
+  &-2 {
+    border: 2px $red solid;
+    box-shadow: 0 0 10px 0 $red-neon;
+  }
+
+  &-3 {
+    border: 3px $red solid;
+    box-shadow: 0 0 10px 0 $red-neon;
+  }
+}
+
+// End neon colors
+
+// button css
+.skew-btn {
+  transform: skew(-21deg);
+
+  span {
+
+    span,
+    i {
+      transform: skew(21deg);
+    }
+
+    i {
+      position: absolute;
+      left: 15px;
+    }
+  }
+}
+
+.animated-btn-hover {
+
+  &:after,
+  &:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background-color: $red;
+  }
+
+  &:after {
+    top: 0;
+    right: 0;
+  }
+
+  &:before {
+    top: auto;
+    bottom: 0;
+    left: 0;
+  }
+
+  &:hover {
+
+    &:after {
+      animation: animated-btn .6s ease-in-out forwards
+    }
+
+    &:before {
+      animation: animated-btn-bottom .6s ease-in-out forwards
+    }
+  }
+}
+
+.animated-btn-hover-red {
+
+  &:after,
+  &:before {
+    background-color: $red;
+  }
+
+  &:hover {
+
+    animation: animated-btn-border-red .3s linear .6s forwards
+  }
+}
+
+.animated-btn-hover-yellow {
+
+  &:after,
+  &:before {
+    background-color: $yellow;
+  }
+
+  &:hover {
+
+    animation: animated-btn-border-yellow .3s linear .6s forwards
+  }
+}
+
+.date-btn {
+  // border: 3px solid $border-color;
+
+  &:before {
+    border: 3px solid $border-color;
+  }
+
+  .q-btn__content {
+    text-align: left;
+    justify-content: space-between;
+  }
+}
+
+// end button css
+
+
+// Gradients
+.bg-light-gradient {
+  background: linear-gradient(180deg,
+      rgba(218, 218, 218, 0.5) -61.67%,
+      #dadada 50.94%,
+      rgba(218, 218, 218, 0.5) 168.33%);
+}
+
+.bg-dark-gradient {
+  background: linear-gradient(180deg,
+      #202020 0%,
+      #242424 30.94%,
+      #2b2b2b 62.58%,
+      #333333 97.73%,
+      #101010 135%);
+}
+
+.bg-dark-gradient--no-repeat {
+  background-repeat: no-repeat;
+  background: linear-gradient(180deg,
+      #202020 0%,
+      #242424 30.94%,
+      #2b2b2b 62.58%,
+      #333333 97.73%,
+      #101010 135%);
+}
+
+.gradient-line {
+  &.q-separator {
+    background: linear-gradient(90deg,
+        rgba(172, 172, 172, 1) 0%,
+        rgba(172, 172, 172, 0) 100%);
+  }
+
+  border-image: linear-gradient(90deg,
+    rgba(172, 172, 172, 1) 0%,
+    rgba(172, 172, 172, 0) 100%) 10;
+}
+
+.select-option-gradient {
+  background: rgb(32, 31, 31);
+  background: linear-gradient(90deg,
+      rgb(151, 151, 151) 0%,
+      rgba(32, 32, 32, 1) 85%);
+}
+
+// Table
+.sticky-header-scrollable {
+  max-height: 580px;
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th {
+    background-color: inherit;
+  }
+
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+
+  thead tr:first-child th {
+    top: 0;
+  }
+
+  &.q-table--loading thead tr:last-child th {
+    top: 48px;
+  }
+
+  tbody {
+    scroll-margin-top: 48px;
+  }
+}
+
+
+//Quasar overrides
+
+body.desktop .q-hoverable:hover>.q-focus-helper {
+  background: transparent !important;
+}
+
+//End Quasar overrides
+
+// Animation
+.reveal {
+  position: relative;
+  opacity: 0;
+  bottom: -115px;
+  animation: animated-reveal 0.75s forwards;
+
+  &-left {
+    position: relative;
+    opacity: 0;
+    bottom: 0;
+    right: -115px;
+    animation: animated-reveal-left 0.75s forwards;
+  }
+}
+
+.reveal-clipped-wrapper {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+// End animation
+.add__button {
+  &::before {
+    border-width: 3px !important;
+  }
+}
+
+.new-rep-card {
+  width: 0px !important;
+  min-width: 0;
+  opacity: 0;
+  max-height: 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+.revealpls {
+  width: 343px !important;
+  animation: animated-rep-card-reveal 1s forwards;
+}
+
+.rep-card {
+  min-height: 220px;
+  min-width: 343px;
+  clip-path: polygon(10% 0, 100% 0, 100% 90%, 85% 100%, 0 100%, 0 6%);
+  border-top: 3px solid red;
+  border-bottom: 3px solid red;
+}
+
+.rank-box {
+  float: right;
+  color: yellow;
+  border: 1px solid yellow;
+  padding: 5px 15px;
+  margin-top: -10px
+}
+
+@keyframes animated-rep-card-reveal {
+  0% {
+    width: 0px;
+    opacity: 0;
+    bottom: -50px;
+  }
+
+  50% {
+    width: 343px;
+    max-height: 900px;
+    opacity: 0;
+    bottom: -50px;
+  }
+
+  100% {
+    width: 343px !important;
+    max-height: 900px;
+    opacity: 1;
+    bottom: 0;
+  }
+}
+
+// key frames animations
+@keyframes animated-btn {
+  0% {
+    right: 0;
+    width: 0;
+  }
+
+  50% {
+    right: 0;
+    width: 100%;
+  }
+
+  75% {
+    right: 0;
+    width: 100%;
+  }
+
+  100% {
+    left: 0;
+    width: 0;
+  }
+}
+
+@keyframes animated-btn-bottom {
+  0% {
+    left: 0;
+    width: 0;
+  }
+
+  50% {
+    left: 0;
+    width: 100%;
+  }
+
+  75% {
+    left: auto;
+    right: 0;
+    width: 100%;
+  }
+
+  100% {
+    left: auto;
+    right: 0;
+    width: 0;
+  }
+}
+
+@keyframes animated-btn-border-red {
+  0% {
+    box-shadow: 0
+  }
+
+  100% {
+    box-shadow: 0 0 0 3px $red;
+  }
+}
+
+@keyframes animated-btn-border-yellow {
+  0% {
+    box-shadow: 0
+  }
+
+  100% {
+    box-shadow: 0 0 0 3px $yellow;
+  }
+}
+
+@keyframes animated-reveal {
+  0% {
+    bottom: -115px;
+    opacity: 0;
+  }
+
+  100% {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes animated-reveal-left {
+  0% {
+    left: -115px;
+    opacity: 0;
+  }
+
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+
+// End key frames animations

@@ -1,0 +1,167 @@
+// https://codepen.io/kevinpowell/pen/bGLmORx
+$edge-size: 0.6em;
+
+.cut {
+
+  // Cut top-left and bottom-right
+  &--1 {
+    clip-path: polygon(#{$edge-size} 0%,
+      100% 0,
+      100% calc(100% - #{$edge-size}),
+      calc(100% - #{$edge-size}) 100%,
+      0 100%,
+      0% #{$edge-size});
+  }
+
+  // Cut for the player card
+  &--player__card {
+    clip-path: polygon(#{$edge-size} 0%,
+      100% 0,
+      100% calc(100% - #{$edge-size + 4.5em}),
+      calc(100% - #{$edge-size + 4.5em}) 100%,
+      #{$edge-size} 100%,
+      0 calc(100% - #{$edge-size}),
+      0 #{$edge-size});
+  }
+
+  // Cut bottom-right
+  &--2 {
+    clip-path: polygon(0 0%,
+      100% 0,
+      100% calc(100% - #{$edge-size}),
+      calc(100% - #{$edge-size}) 100%,
+      0 100%,
+      0% #{$edge-size});
+
+    &--large {
+      clip-path: polygon(0 0%,
+        100% 0,
+        100% calc(100% - #{$edge-size + 4.5em}),
+        calc(100% - #{$edge-size + 4.5em}) 100%,
+        0 100%,
+        0% #{$edge-size + 4.5em});
+
+      &--2 {
+        clip-path: polygon(0 0%,
+          100% 0,
+          100% calc(100% - #{$edge-size + 6em}),
+          calc(100% - #{$edge-size + 6em}) 100%,
+          0 100%,
+          0% #{$edge-size + 6em});
+      }
+    }
+  }
+
+  // Cut bottom-left
+  &--3 {
+    clip-path: polygon(0 0%,
+      100% 0,
+      100% calc(100% - #{$edge-size}),
+      100% 100%,
+      #{$edge-size} 100%,
+      0 calc(100% - #{$edge-size}));
+
+    &--large {
+      clip-path: polygon(0 0%,
+        100% 0,
+        100% calc(100% - #{$edge-size + 4.5em}),
+        100% 100%,
+        #{$edge-size + 4.5em} 100%,
+        0 calc(100% - #{$edge-size + 4.5em}));
+    }
+  }
+
+  // Cut all four corners
+  &--4 {
+    clip-path: polygon(#{$edge-size} 0%,
+      calc(100% - #{$edge-size}) 0%,
+      100% #{$edge-size},
+      100% calc(100% - #{$edge-size}),
+      calc(100% - #{$edge-size}) 100%,
+      #{$edge-size} 100%,
+      0% calc(100% - #{$edge-size}),
+      0% #{$edge-size});
+  }
+
+  &--5 {
+    clip-path: polygon(0 0%,
+      100% 0%,
+      calc(100% - #{$edge-size + 1em}) 100%,
+      #{$edge-size + 1em} 100%);
+  }
+
+  &-with-hover {
+    &:before {
+      -webkit-clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+      transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1), clip-path 200ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-clip-path 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      border-width: 2px;
+    }
+
+    &:hover:before {
+      -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
+    }
+  }
+
+  &-with-hover-button {
+    -webkit-clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+    clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1), clip-path 200ms cubic-bezier(0.4, 0, 0.2, 1), -webkit-clip-path 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%, 0 0);
+    }
+  }
+}
+
+.q-field.input-cut {
+  .q-field__control {
+    border-radius: 0;
+    clip-path: polygon(0 0%,
+      100% 0,
+      100% calc(100% - #{$edge-size + 0.2em}),
+      calc(100% - #{$edge-size + 0.2em}) 100%,
+      0 100%,
+      0% #{$edge-size + 0.2em});
+  }
+}
+
+.cut-with-hover {}
+
+.q-btn {
+  // border-radius: 0;
+  // padding: 0.5em 1.5em;
+  // &--outline {
+  //   border: 1px solid currentColor;
+  //   overflow: hidden;
+  //   &.cut {
+  //     border-radius: 0;
+
+  //     &--1 {
+  //       &::before,
+  //       &::after {
+  //         content: '';
+  //         width: 0;
+  //         height: 1.5em;
+  //         background: currentColor;
+  //         border: 1px solid currentColor;
+  //         transform: rotate(45deg);
+  //         position: absolute;
+  //         border-top: 0;
+  //         border-left: 0;
+  //         border-bottom: 0;
+  //       }
+  //       &::before {
+  //         top: calc(#{$edge-size} - 1.3em);
+  //         left: calc(#{$edge-size} - 0.2em);
+  //       }
+  //       &::after {
+  //         right: calc(#{$edge-size} - 0.4em);
+  //         bottom: calc(#{$edge-size} - 1.1em);
+  //       }
+  //     }
+  //   }
+  // }
+}
