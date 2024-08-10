@@ -1,6 +1,7 @@
 <template>
   <grid-layout is-bounded :layout="layout" :col-num="12" :row-height="30" is-draggable :is-resizable="false"
     use-css-transforms>
+    {{ layout }}
     <grid-item v-for="item in layout" :static="item.static" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
       :key="item.i">
       <div class="fit">

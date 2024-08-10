@@ -127,6 +127,15 @@ body {
       background: $page-color;
       padding: 0 10px;
     }
+
+    .separator-icon-container {
+      position: absolute;
+      top: 0;
+      transform: translateY(-50%);
+      right: 30px;
+      background: $page-color;
+      padding: 0 6px;
+    }
   }
 
   &-button {
@@ -142,6 +151,20 @@ body {
       padding: 0 10px;
     }
 
+  }
+}
+
+.separator-icon-container {
+  cursor: pointer;
+
+  .separator-icon {
+    transition-duration: 0.4s;
+  }
+
+  &:hover {
+    .separator-icon {
+      transform: rotate(90deg);
+    }
   }
 }
 
