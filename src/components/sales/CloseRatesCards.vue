@@ -1,8 +1,8 @@
 <template>
   <div>
     <div>
-      <grid-layout :prevent-collision="true" :is-bounded="true" :layout="layout" :col-num="layout.length" :max-rows="1"
-        is-draggable :is-resizable="false" :row-height="216">
+      <grid-layout :prevent-collision="true" :is-bounded="true" :layout="layout"
+        :col-num="layout.length > 3 ? 3 : layout.length" is-draggable :is-resizable="false" :row-height="216">
 
         <grid-item v-for="item in layout" :static="item.static" :x="item.x" :y="item.y" :w="item.w" :h="item.h"
           :i="item.i" :key="item.i" @move="moveEvent">
@@ -17,102 +17,45 @@
         </grid-item>
       </grid-layout>
     </div>
-    <!-- <div class="row q-col-gutter-md">
-      <div class="col-4" v-for="(card, index) in cards" :key="index">
-        <q-card square class="bg-transparent q-pa-lg no-shadow full-height text-center relative-position bordered-card"
-          style="min-height: 17vh;">
-          <span class="text-white bordered-card-label">{{ card.title }}</span>
-          <q-card-section class="q-pb-none q-px-none font-32 text-weight-bold full-height relative-position">
-            <div class="text-yellow text-center vertical-text">{{ card.num }}%</div>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script setup>
 import { GridLayout, GridItem } from 'grid-layout-plus'
-import { onMounted, ref, toRefs, watchEffect, watch } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 const props = defineProps(['closingRates', 'itemsToShow'])
 const { closingRates } = toRefs(props)
 
-const cards = ref([
-  {
-    title: 'Call To Close',
-    num: 27
-  },
-  {
-    title: 'Call To Close',
-    num: 5
-  },
-  {
-    title: 'Call To Close',
-    num: 100
-  },
-])
 
-watchEffect(() => {
-  const { calls_to_close: callsToClose, calls_to_offers: callsToOffers, offers_to_close: offersToClose } = closingRates.value
-  cards.value = [
-    {
-      title: 'Calls To Close',
-      num: callsToClose
-    },
-    {
-      title: 'Calls To Offers',
-      num: callsToOffers
-    },
-    {
-      title: 'Offers To Close',
-      num: offersToClose
-    }
-  ]
-})
-watch(
-  () => props.itemsToShow,  // Watch the prop directly
-  () => {
-    setLayout()
-  },
-  { deep: true }
-)
-onMounted(() => {
-  const { calls_to_close: callsToClose, calls_to_offers: callsToOffers, offers_to_close: offersToClose } = closingRates.value
-  cards.value = [
-    {
-      title: 'Calls To Close',
-      num: callsToClose
-    },
-    {
-      title: 'Calls To Offers',
-      num: callsToOffers
-    },
-    {
-      title: 'Offers To Close',
-      num: offersToClose
-    }
-  ]
-  // setLayout()
-})
 const layout = ref([])
 function setLayout() {
+
   let temp = []
   let startX = 0
-  let tempCards = cards.value.filter((card) => {
-    let item = props.itemsToShow.find((item) => item.label === card.title)
-    return item.value == true
+  let tempCards = Object.keys(closingRates.value).filter((cardKey) => {
+    let item = props.itemsToShow.find((item) => item.label === cardKey)
+    return !!item && item.value == true
   })
+
   tempCards.forEach((card, index) => {
+    let cardObj = {
+      title: card,
+      num: closingRates.value[card]
+    }
     let obj = {
       x: startX,
-      y: 0,
+      y: index > 2 ? 2 : 1,
       w: 1,
       h: 1,
       i: index,
-      data: card
+      data: cardObj
     }
     temp.push(obj)
-    startX = startX + 1
+    if (startX == 2) {
+      startX = 0
+    } else {
+      startX = startX + 1
+    }
 
   })
   layout.value = temp
@@ -148,6 +91,13 @@ function moveEvent(i, newX, newY) {
     }
   }
 }
+watch(
+  () => props.itemsToShow,  // Watch the prop directly
+  () => {
+    setLayout()
+  },
+  { deep: true, immediate: true },
+)
 </script>
 
 <style lang="scss" scoped></style>

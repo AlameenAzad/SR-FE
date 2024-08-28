@@ -11,7 +11,7 @@
         <div class="row q-col-gutter-md">
           <div class="col-12">
             <div class="text-white separator-with-title q-mb-lg font-16"><span>Summary</span>
-              <CardsMenu :data="summary" type="summary" @items-toshow="(event) => setItemsToShow(event, 'summary')" />
+              <CardsMenu :data="summary" type="Summary" @items-toshow="(event) => setItemsToShow(event, 'summary')" />
             </div>
           </div>
           <div class="col-12">
@@ -20,7 +20,7 @@
 
           <div class="col-12">
             <div class="text-white separator-with-title q-my-lg font-16"><span>Month To Date</span>
-              <CardsMenu :data="monthToDate" type="monthToDate"
+              <CardsMenu :data="monthToDate" type="MonthToDate"
                 @items-toshow="(event) => setItemsToShow(event, 'monthToDate')" />
             </div>
           </div>
@@ -29,13 +29,13 @@
           </div>
           <div class="col-6 q-my-lg">
             <div class="text-white separator-with-title q-mb-md font-16"><span>Closing Rates</span>
-              <CardsMenu :data="closingRates" type="closingRates"
+              <CardsMenu :data="closingRates" type="ClosingRates"
                 @items-toshow="(event) => setItemsToShow(event, 'closingRates')" />
             </div>
           </div>
           <div class="col-6 q-my-lg">
             <div class="text-white separator-with-title q-mb-md font-16"><span>Total Units</span>
-              <CardsMenu type="totalUnits" @items-toshow="(event) => setItemsToShow(event, 'totalUnits')" />
+              <CardsMenu type="totalUnits" @items-toshow="(event) => setItemsToShow(event, 'TotalUnits')" />
             </div>
           </div>
           <div class="col-6 q-pa-sm">
@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import SummaryCards from './SummaryCards.vue'
+import SummaryCards from '../../components/sales/SummaryCards.vue'
 import MonthToDateCards from 'components/sales/MonthToDateCards.vue'
 import CloseRatesCards from 'components/sales/CloseRatesCards.vue'
 import TotalUnitsCards from 'components/sales/TotalUnitsCards.vue'

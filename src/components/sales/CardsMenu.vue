@@ -1,10 +1,15 @@
 <script setup>
-import { defineEmits, defineProps, onMounted, ref, watch, computed } from 'vue'
+import { defineEmits, defineProps, onMounted, ref, watch, computed, toRef } from 'vue'
+import AddClosingRates from './AddClosingRates.vue'
+import { useDashboardStore } from 'src/stores/dashboard'
+
+const dashboardStore = useDashboardStore()
+const data = toRef(props, 'data')
 const props = defineProps(['data', 'type'])
 const emit = defineEmits(['itemsToshow'])
 const items = ref([])
 function setSummaryItems() {
-    const { calls, offers, sales } = props.data
+    const { calls, offers, sales } = data.value
     const filteredItems = { calls, offers, sales }
     let tempItems = []
     Object.keys(filteredItems).forEach((key) => {
@@ -48,18 +53,14 @@ function setMonthToDateItems() {
 
 }
 function setClosingRatesItems() {
-    const cards = [{
-        label: 'Calls To Close',
-        value: true
-    },
-    {
-        label: 'Calls To Offers',
-        value: true
-    },
-    {
-        label: 'Offers To Close',
-        value: true
-    },]
+    const cards = []
+    Object.keys(data.value).forEach((cardKey) => {
+        let obj = {
+            label: cardKey,
+            value: true
+        }
+        cards.push(obj)
+    })
     items.value = cards
 }
 function setTotalUnitsItems() {
@@ -70,23 +71,32 @@ function setTotalUnitsItems() {
     ]
     items.value = cards
 }
-onMounted(() => {
+function refresh() {
+    dashboardStore.getDashboardData()
+    addDialog.value = false
+}
+const addDialog = ref(false)
+function setupMenu() {
     switch (props.type) {
-        case 'summary':
+        case 'Summary':
             setSummaryItems()
             break
-        case 'monthToDate':
+        case 'MonthToDate':
             setMonthToDateItems()
             break
-        case 'closingRates':
+        case 'ClosingRates':
             setClosingRatesItems()
             break
-        case 'totalUnits':
+        case 'TotalUnits':
             setTotalUnitsItems()
             break
         default:
             break
     }
+}
+onMounted(() => {
+    setupMenu()
+
 })
 watch(items,
     (newVal) => {
@@ -99,6 +109,15 @@ watch(items,
         immediate: true
     }
 )
+
+watch(data,
+    () => {
+        setupMenu()
+    },
+    {
+        deep: true,
+    }
+)
 const disableCheckBox = computed(() => items.value.filter(item => item.value).length == 1)
 </script>
 
@@ -108,18 +127,31 @@ const disableCheckBox = computed(() => items.value.filter(item => item.value).le
         <q-menu class="bg-accent text-white" transition-show="jump-down" transition-hide="jump-up" fit
             v-if="items.length > 0">
             <q-list style="min-width: 100px">
-                <q-item class="q-pl-sm" tag="label" v-ripple v-for="item in items" :key="'homeMenuItem' + item.label">
+                <q-item class="q-pl-sm text-center" tag="label" v-ripple v-for="item in items"
+                    :key="'homeMenuItem' + item.label">
                     <q-item-section side top>
                         <q-checkbox v-model="item.value" color="red-10" :disable="disableCheckBox && item.value" />
                     </q-item-section>
 
                     <q-item-section>
-                        <q-item-label class="non-selectable	">{{ item.label }}</q-item-label>
+                        <q-item-label class="non-selectable">{{ item.label }}</q-item-label>
                     </q-item-section>
                 </q-item>
                 <q-separator />
+                <q-item class="q-pl-md text-center" clickable @click="addDialog = true">
+                    <q-item-section side>
+                        <q-icon name="add" color="white"></q-icon>
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label class="non-selectable">Add More</q-item-label>
+                    </q-item-section>
+                </q-item>
             </q-list>
         </q-menu>
+
+        <q-dialog v-model="addDialog">
+            <AddClosingRates v-if="props.type == 'ClosingRates'" @submited="refresh()" />
+        </q-dialog>
     </div>
 </template>
 
