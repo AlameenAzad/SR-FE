@@ -18,7 +18,6 @@ async function deleteClosingRated() {
     try {
         const { data } = await api.get('/api/closing-rates')
         let id = data.data.find((el) => el.name == props.item.label).id
-        console.log(id)
         if (id == undefined) throw new Error('Not Found')
         else {
             api.delete(`/api/closing-rates/${id}`).then(() => {
