@@ -77,13 +77,14 @@ module.exports = configure(function (ctx) {
       //   [ 'package-name', { ..options.. } ]
       // ]
       env: require('dotenv').config({
-        path: ctx.dev ? './.env.dev' : './.env'
+        path: ctx.dev ? './.env.dev' : './.env',
       }).parsed,
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       // https: true
+      port: 8000,
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
