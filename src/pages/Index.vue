@@ -1,6 +1,5 @@
 <template>
   <q-page padding class="flex flex-center">
-    <GoogleIntegration />
     <div v-if="reveal">
       <h1 class="q-mb-md text-center">
         <span>
@@ -27,7 +26,6 @@
 </template>
 
 <script setup>
-import GoogleIntegration from 'src/components/user/settings/GoogleIntegration.vue'
 import { ref } from 'vue'
 const title = 'Sales Rank.io'
 const splitTitle = title.split('')

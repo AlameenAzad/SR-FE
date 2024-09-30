@@ -62,6 +62,17 @@ export const useAuthStore = defineStore('auth', {
             code: response.data.user.calendly_code,
             eventType: response.data.user.calendly_event_types,
           }
+          this.googleIntegrated = response.data.user
+            .google_calendar_access_token
+            ? true
+            : false
+          this.google = {
+            google_calendar_access_token:
+              response.data.user.google_calendar_access_token,
+            google_calendar_refresh_token:
+              response.data.user.google_calendar_refresh_token,
+            google_calendar_code: response.data.user.google_calendar_code,
+          }
           return response.data
         })
         .catch((error) => error.response)
@@ -155,14 +166,31 @@ export const useAuthStore = defineStore('auth', {
         })
         .catch((error) => error)
     },
-    integrateGoogle(res) {
+    integrateGoogle(code) {
       api
         .post('/api/google-calendar/integrate', {
-          code: res.code,
+          code: code,
         })
         .then((res) => {
-          this.google = res.data
+          let obj = {
+            google_calendar_access_token: res.data.data.access_token,
+            google_calendar_refresh_token: res.data.data.refresh_token,
+            google_calendar_code: res.data.data.code,
+          }
+          this.google = obj
           this.googleIntegrated = true
+        })
+        .catch((e) => e.response)
+    },
+    refreshGoogle() {
+      api
+        .post('/api/google-calendar/refresh', {
+          code: this.google.google_calendar_code,
+        })
+        .then((res) => {
+          this.google.access_token = res.data.access_token
+          this.google.refresh_token = res.data.refresh_token
+          // this.googleIntegrated = true
         })
         .catch((e) => e.response)
     },
