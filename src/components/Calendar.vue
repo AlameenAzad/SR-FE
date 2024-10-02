@@ -21,33 +21,65 @@
             <div class="row q-gutter-sm q-mb-lg selected-meeting" v-for="(meeting, index) in schedule.meetings"
               :class="selectedMeeting?.id === meeting.id ? 'selected-meeting-clicked' : ''" :key="meeting.uri"
               @click="selectMeeting(meeting)" @mouseenter="meetingData = meeting.id">
-
-              <div class="col-2">{{ meeting.startTime }}</div>
-              <div class="col-9 q-pl-md" :class="index % 2 == 0 ? 'meeting-border-important' : 'meeting-border-normal'">
-                <p class="q-mb-none">{{ meeting.name }}</p>
-                <p class="q-mb-none opacity-80">{{ meeting.invitees.name }}</p>
+              <div v-if="meeting.isGoogle == true" class="relative-position full-width">
+                <div class="googleEventBadge"><q-icon name="fa-brands fa-google" /></div>
+                <div class="col-12">{{ meeting.startTime }}</div>
+                <div class="col-12 q-pl-md"
+                  :class="index % 2 == 0 ? 'meeting-border-important' : 'meeting-border-normal'">
+                  <p class="q-mb-none">{{ meeting.name }}</p>
+                  <p class="q-mb-none opacity-80">{{ meeting.invitees ? meeting.invitees[0].displayName : '' }}</p>
+                </div>
+                <q-tooltip anchor="center right" :offset="[30, 20]" self="center left" class="bg-black">
+                  <div v-if="meetingData == meeting.id && meeting.invitees">
+                    <!-- <p class="font-16">{{ meeting.invitees.name }}</p> -->
+                    <p class="font-14"><strong>Email:</strong> {{ meeting.invitees[0].email }}</p>
+                    <!-- <p class="font-14"><strong>Timezone:</strong> {{ meeting.invitees.timezone }}</p> -->
+                    <p class="font-14"><strong>Status:</strong> {{ meeting.invitees[0].responseStatus }}</p>
+                    <!-- <p class="font-14"><strong>Rescheduled:</strong> {{ meeting.invitees.rescheduled }}</p> -->
+                    <!-- Add more fields as needed -->
+                    <!-- <p class="font-16">Questions and Answers:</p>
+                    <ul>
+                      <li v-for="qa in meeting.invitees.questions_and_answers" :key="qa.question" class="font-14">
+                        <strong>{{ qa.question }}</strong>:
+                        <br />
+                        {{ qa.answer }}
+                      </li>
+                    </ul> -->
+                  </div>
+                  <div v-else>
+                    <p class="font-16">Loading meeting data...</p>
+                  </div>
+                </q-tooltip>
               </div>
-              <q-tooltip anchor="center right" :offset="[30, 20]" self="center left" class="bg-black">
-                <div v-if="meetingData == meeting.id && meeting.invitees">
-                  <p class="font-16">{{ meeting.invitees.name }}</p>
-                  <p class="font-14"><strong>Email:</strong> {{ meeting.invitees.email }}</p>
-                  <p class="font-14"><strong>Timezone:</strong> {{ meeting.invitees.timezone }}</p>
-                  <p class="font-14"><strong>Status:</strong> {{ meeting.invitees.status }}</p>
-                  <p class="font-14"><strong>Rescheduled:</strong> {{ meeting.invitees.rescheduled }}</p>
-                  <!-- Add more fields as needed -->
-                  <p class="font-16">Questions and Answers:</p>
-                  <ul>
-                    <li v-for="qa in meeting.invitees.questions_and_answers" :key="qa.question" class="font-14">
-                      <strong>{{ qa.question }}</strong>:
-                      <br />
-                      {{ qa.answer }}
-                    </li>
-                  </ul>
+              <div v-else>
+                <div class="col-2">{{ meeting.startTime }}</div>
+                <div class="col-9 q-pl-md"
+                  :class="index % 2 == 0 ? 'meeting-border-important' : 'meeting-border-normal'">
+                  <p class="q-mb-none">{{ meeting.name }}</p>
+                  <p class="q-mb-none opacity-80">{{ meeting.invitees.name }}</p>
                 </div>
-                <div v-else>
-                  <p class="font-16">Loading meeting data...</p>
-                </div>
-              </q-tooltip>
+                <q-tooltip anchor="center right" :offset="[30, 20]" self="center left" class="bg-black">
+                  <div v-if="meetingData == meeting.id && meeting.invitees">
+                    <p class="font-16">{{ meeting.invitees.name }}</p>
+                    <p class="font-14"><strong>Email:</strong> {{ meeting.invitees.email }}</p>
+                    <p class="font-14"><strong>Timezone:</strong> {{ meeting.invitees.timezone }}</p>
+                    <p class="font-14"><strong>Status:</strong> {{ meeting.invitees.status }}</p>
+                    <p class="font-14"><strong>Rescheduled:</strong> {{ meeting.invitees.rescheduled }}</p>
+                    <!-- Add more fields as needed -->
+                    <p class="font-16">Questions and Answers:</p>
+                    <ul>
+                      <li v-for="qa in meeting.invitees.questions_and_answers" :key="qa.question" class="font-14">
+                        <strong>{{ qa.question }}</strong>:
+                        <br />
+                        {{ qa.answer }}
+                      </li>
+                    </ul>
+                  </div>
+                  <div v-else>
+                    <p class="font-16">Loading meeting data...</p>
+                  </div>
+                </q-tooltip>
+              </div>
             </div>
           </div>
         </div>
@@ -77,6 +109,8 @@ const scrollbarOptions = {
 }
 const schedules = ref([])
 const calendlyIntegrated = authStore.calendlyIntegrated
+const googleIntegrated = authStore.googleIntegrated
+
 const selectedMeeting = ref(null)
 const meetingData = ref(null)
 // button and calendar date format
@@ -94,7 +128,7 @@ const currentDayNumber = ref(currentDate.getDate())
 const currentYear = ref(currentDate.getFullYear())
 const formattedDate = ref(`${currentYear.value}/${currentMonthNumber.value < 10 ? '0' + currentMonthNumber.value : currentMonthNumber}/${currentDayNumber.value}`)
 
-watch(formattedDate, (newFormattedDate) => {
+watch(formattedDate, async (newFormattedDate) => {
   const dateParts = newFormattedDate.split('/')
   currentYear.value = parseInt(dateParts[0])
   currentMonthNumber.value = parseInt(dateParts[1])
@@ -102,18 +136,49 @@ watch(formattedDate, (newFormattedDate) => {
   currentMonthName.value = monthNames[currentMonthNumber.value - 1]
   currentDayName.value = dayNames[new Date(newFormattedDate).getDay()]
   if (calendlyIntegrated) {
-    getSchedules(newFormattedDate)
+    await getSchedules(newFormattedDate)
   }
+  if (googleIntegrated || true == true) {
+    await getGoogleSchedules(newFormattedDate)
+  }
+  getEventsArr()
 })
 // End button and calendar date format
-
+const eventsAll = ref({
+  google: null,
+  calendly: null
+})
 
 const integrateCalendly = () => {
   const CLIENT_ID = process.env.CALENDLY_CLIENT_ID
   const CALENDLY_REDIRECT_URI = process.env.CALENDLY_REDIRECT_URI
   window.open(`https://auth.calendly.com/oauth/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${CALENDLY_REDIRECT_URI}`, '_blank')
 }
-
+const getGoogleSchedules = async (currentDate) => {
+  const scheduleDate = new Date(currentDate)
+  scheduleDate.setHours(0, 0, 0, 0)
+  const nextDayDate = date.addToDate(scheduleDate, { day: 1 })
+  nextDayDate.setHours(0, 0, 0, 0)
+  const params = {
+    from_date: date.formatDate(scheduleDate, 'YYYY-MM-DDTHH:mm:ss.SSSSSS[Z]'),
+    to_date: date.formatDate(nextDayDate, 'YYYY-MM-DDTHH:mm:ss.SSSSSS[Z]'),
+    count: 100,
+    status: 'confirmed'
+  }
+  const response = await dashboardStore.getGoogleSchedules(params)
+  console.log('🚀 ~ getGoogleSchedules ~ response:', response)
+  if (response.status === 400 || response.status === 500) {
+    await authStore.refreshGoogle()
+    getGoogleSchedules()
+  } else {
+    eventsAll.value['google'] = response.data
+    // let events = response.data?.collection
+    // if (events === undefined) events = response
+    // groupEventsByStartDate(events).then(groupedEvents => {
+    //   schedules.value = groupedEvents
+    // })
+  }
+}
 const getSchedules = async (currentDate) => {
   const scheduleDate = new Date(currentDate)
   scheduleDate.setHours(0, 0, 0, 0)
@@ -131,40 +196,45 @@ const getSchedules = async (currentDate) => {
     await dashboardStore.refreshCalendlyToken()
     getSchedules()
   } else {
-    let events = response.data?.collection
-    if (events === undefined) events = response
-    groupEventsByStartDate(events).then(groupedEvents => {
-      schedules.value = groupedEvents
-    })
+    eventsAll.value['calendly'] = response.data?.collection
+    if (eventsAll.value.calendly === undefined) eventsAll.value.calendly = response
+    // let events = response.data?.collection
+    // if (events === undefined) events = response
+    // groupEventsByStartDate(events).then(groupedEvents => {
+    //   schedules.value = groupedEvents
+    // })
   }
 }
 
-const groupEventsByStartDate = async (events) => {
-  const groupedEvents = {}
-  for (const event of events) {
-    console.log('🚀 ~ groupEventsByStartDate ~ event:', event)
-    const startDate = date.formatDate(event.start_time, 'MMM DD, YYYY')
-    if (!groupedEvents[startDate]) {
-      groupedEvents[startDate] = []
-    }
-    // Creating a new object with selected attributes
-    const invitees = await getInvitees(event) // Assuming getInvitees is your async function
-    const simplifiedEvent = {
-      startTime: date.formatDate(event.start_time, 'HH:mm'),
-      endTime: date.formatDate(event.end_time, 'HH:mm'),
-      eventGuests: event.event_guests,
-      eventMemberships: event.event_memberships,
-      name: event.name,
-      uri: event.uri,
-      id: event.calendar_event.external_id,
-      orgStartTime: event.start_time,
-      orgEndTime: event.end_time,
-      invitees: invitees // Saving the response from getInvitees
-    }
-    groupedEvents[startDate].push(simplifiedEvent)
-  }
-  return Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] }))
-}
+// const groupEventsByStartDate = async (events) => {
+//   const groupedEvents = {}
+//   for (const event of events) {
+//     console.log('🚀 ~ groupEventsByStartDate ~ event:', event)
+//     const startDate = date.formatDate(event.start_time, 'MMM DD, YYYY')
+//     if (!groupedEvents[startDate]) {
+//       groupedEvents[startDate] = []
+//     }
+//     // Creating a new object with selected attributes
+//     const invitees = await getInvitees(event) // Assuming getInvitees is your async function
+//     const simplifiedEvent = {
+//       startTime: date.formatDate(event.start_time, 'HH:mm'),
+//       endTime: date.formatDate(event.end_time, 'HH:mm'),
+//       eventGuests: event.event_guests,
+//       eventMemberships: event.event_memberships,
+//       name: event.name,
+//       uri: event.uri,
+//       id: event.calendar_event.external_id,
+//       orgStartTime: event.start_time,
+//       orgEndTime: event.end_time,
+//       invitees: invitees // Saving the response from getInvitees
+//     }
+//     groupedEvents[startDate].push(simplifiedEvent)
+//   }
+//   console.log('aaoaooo', groupedEvents)
+//   console.log('asdadad after', Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] })))
+
+//   return Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] }))
+// }
 
 const selectMeeting = (meeting) => {
   selectedMeeting.value = meeting
@@ -181,12 +251,75 @@ const getInvitees = async (meeting) => {
   }
   return null
 }
+async function getEventsArr() {
+  console.log('ss', eventsAll.value)
+  const groupedEvents = {}
+  if (eventsAll.value.calendly != null) {
+    for (const event of eventsAll.value.calendly) {
+      const startDate = date.formatDate(event.start_time, 'MMM DD, YYYY')
+      if (!groupedEvents[startDate]) {
+        groupedEvents[startDate] = []
+      }
+      const invitees = await getInvitees(event) // Assuming getInvitees is your async function
+      const simplifiedEvent = {
+        startTime: date.formatDate(event.start_time, 'HH:mm'),
+        endTime: date.formatDate(event.end_time, 'HH:mm'),
+        eventGuests: event.event_guests,
+        eventMemberships: event.event_memberships,
+        name: event.name,
+        uri: event.uri,
+        id: event.calendar_event.external_id,
+        orgStartTime: event.start_time,
+        orgEndTime: event.end_time,
+        isGoogle: false,
+        invitees: invitees // Saving the response from getInvitees
+      }
+      groupedEvents[startDate].push(simplifiedEvent)
+    }
+  }
+  if (eventsAll.value.google != null) {
 
-onMounted(() => {
+    for (const event of eventsAll.value.google) {
+      const startDate = date.formatDate(event.start.dateTime, 'MMM DD, YYYY')
+      if (!groupedEvents[startDate]) {
+        groupedEvents[startDate] = []
+      }
+      let creator = event.creator
+      creator.displayName = creator.displayName == null ? creator.email.split('@')[0] : creator.displayName
+      if (event.attendees) {
+        event.attendees.forEach(at => {
+          at.displayName = at.displayName == null ? at.email.split('@')[0] : at.displayName
+        })
+      }
+      const simplifiedEvent = {
+        startTime: date.formatDate(event.start.dateTime, 'HH:mm'),
+        endTime: date.formatDate(event.end.dateTime, 'HH:mm'),
+        eventGuests: event.attendees,
+        eventMemberships: [creator],
+        name: event.summary,
+        uri: event.htmlLink,
+        id: event.id,
+        orgStartTime: event.start.dateTime,
+        orgEndTime: event.end.dateTime,
+        isGoogle: true,
+        invitees: event.attendees?.filter((a) => a.self != true) // Saving the response from getInvitees
+      }
+      groupedEvents[startDate].push(simplifiedEvent)
+    }
+  }
+  console.log('new Grop', Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] })))
+  schedules.value = Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] }))
+}
+onMounted(async () => {
   if (authStore.calendlyIntegrated) {
-    getSchedules(new Date())
+    await getSchedules(new Date())
     dashboardStore.selectedMeeting = null
   }
+  if (authStore.googleIntegrated || true == true) {
+    await getGoogleSchedules(new Date())
+    dashboardStore.selectedMeeting = null
+  }
+  getEventsArr()
 })
 </script>
 
@@ -230,5 +363,12 @@ onMounted(() => {
   background-position: 50% 100%, 0% 100%, 100% 100%, 100% 0%, 0% 0%;
   transform: scaleX(1) rotate(0deg);
   transition-delay: 0s, 0.3s, 0.6s;
+}
+
+.googleEventBadge {
+  position: absolute;
+  right: 0;
+  top: 0;
+
 }
 </style>

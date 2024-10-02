@@ -28,7 +28,7 @@
                   </div>
                   <div class="title" :style="index > 0 ? `opacity:${currentStep >= index ? '1' : '0.2'}` : ''">{{
                     node.name
-                    }}</div>
+                  }}</div>
                 </div>
               </div>
             </div>
@@ -399,7 +399,7 @@ const getProducts = async () => {
 }
 const createLog = async (id) => {
   console.log('🚀 ~ createLog ~ id:', id)
-  const { orgStartTime, orgEndTime, name, id: eventId, invitees, eventMemberships } = dashboardStore.selectedMeeting
+  const { orgStartTime, orgEndTime, name, id: eventId, invitees, eventMemberships, isGoogle } = dashboardStore.selectedMeeting
   const product = inputsData.value.products.selectedProduct
   const cashPlan = inputsData.value.cashPlans.selectedCashPlan
   const rep = inputsData.value.assignSetter.selectedRep
@@ -411,7 +411,7 @@ const createLog = async (id) => {
     offer_result: selectedNodeNames.value[4],
     event: {
       event_id: eventId,
-      event_name: `${name} - ${eventMemberships[0].user_name}, ${invitees.name}`,
+      event_name: isGoogle == true ? ` ${name} - ${eventMemberships[0].displayName}, ${invitees[0].displayName}` : `${name} - ${eventMemberships[0].user_name}, ${invitees.name}`,
       event_start_date: orgStartTime,
       event_end_date: orgEndTime
     }

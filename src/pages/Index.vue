@@ -32,11 +32,11 @@ const splitTitle = title.split('')
 const reveal = ref(false)
 const playing = ref(false)
 const audioPlayer = new Audio('/audio/intro.mp3')
-function playAudio () {
+function playAudio() {
   audioPlayer.play()
   playing.value = true
 }
-function pauseAudio () {
+function pauseAudio() {
   audioPlayer.pause()
   playing.value = false
 }

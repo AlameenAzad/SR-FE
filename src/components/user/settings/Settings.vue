@@ -36,6 +36,10 @@
           @update:model-value="saveEventType" />
       </div>
     </div>
+    <div class="offset-3 col-9 q-mt-lg">
+      <div class="text-white separator-with-title q-my-lg font-16"><span>Google Integration</span></div>
+      <GoogleIntegration />
+    </div>
     <div class="offset-3 col-9 q-mt-lg" v-if="isManager">
       <div class="text-white separator-with-title q-my-lg font-16"><span>Stripe Integration</span></div>
       <div class="q-py-md q-gutter-sm" v-if="!stripe.enabled">
@@ -74,7 +78,7 @@ import { useAuthStore } from 'src/stores/auth'
 import { useQuasar } from 'quasar'
 import changePassword from './UpdatePassword.vue'
 import { useRoute } from 'vue-router'
-
+import GoogleIntegration from './GoogleIntegration.vue'
 const $q = useQuasar()
 const authStore = useAuthStore()
 const username = ref(authStore.user.name)

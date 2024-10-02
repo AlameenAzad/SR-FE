@@ -77,7 +77,7 @@ module.exports = configure(function (ctx) {
       //   [ 'package-name', { ..options.. } ]
       // ]
       env: require('dotenv').config({
-        path: ctx.dev ? './.env.dev' : './.env'
+        path: ctx.dev ? './.env.dev' : './.env',
       }).parsed,
     },
 
