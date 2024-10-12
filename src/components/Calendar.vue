@@ -21,20 +21,41 @@
             <div class="row q-gutter-sm q-mb-lg selected-meeting" v-for="(meeting, index) in schedule.meetings"
               :class="selectedMeeting?.id === meeting.id ? 'selected-meeting-clicked' : ''" :key="meeting.uri"
               @click="selectMeeting(meeting)" @mouseenter="meetingData = meeting.id">
-              <div v-if="meeting.isGoogle == true" class="relative-position full-width">
+              <div v-if="meeting.isGoogle == true" class="relative-position full-width googleEvent">
                 <div class="googleEventBadge"><q-icon name="fa-brands fa-google" /></div>
                 <div class="col-12">{{ meeting.startTime }}</div>
                 <div class="col-12 q-pl-md"
                   :class="index % 2 == 0 ? 'meeting-border-important' : 'meeting-border-normal'">
                   <p class="q-mb-none">{{ meeting.name }}</p>
                   <p class="q-mb-none opacity-80">{{ meeting.invitees ? meeting.invitees[0].displayName : '' }}</p>
+                  <p v-if="meeting.meetingLink" class="q-mb-none opacity-80 eventMeetingLink"
+                    @click.stop="openMeeting(meeting.meetingLink)"
+                    style=" word-wrap: break-word;overflow-wrap: break-word;white-space: normal; ">{{
+                      meeting.meetingLink }}</p>
+
                 </div>
                 <q-tooltip anchor="center right" :offset="[30, 20]" self="center left" class="bg-black">
-                  <div v-if="meetingData == meeting.id && meeting.invitees">
-                    <!-- <p class="font-16">{{ meeting.invitees.name }}</p> -->
-                    <p class="font-14"><strong>Email:</strong> {{ meeting.invitees[0].email }}</p>
-                    <!-- <p class="font-14"><strong>Timezone:</strong> {{ meeting.invitees.timezone }}</p> -->
-                    <p class="font-14"><strong>Status:</strong> {{ meeting.invitees[0].responseStatus }}</p>
+                  <div v-if="meetingData == meeting.id">
+                    <p class="font-14"><strong>Conference Solution</strong> {{ meeting.conferenceSolution }}</p>
+
+                    <div v-if="meeting.invitees">
+                      <!-- <p class="font-16">{{ meeting.invitees.name }}</p> -->
+                      <p class="font-14"><strong>Email:</strong> {{ meeting.invitees[0].email }}</p>
+                      <!-- <p class="font-14"><strong>Timezone:</strong> {{ meeting.invitees.timezone }}</p> -->
+                      <p class="font-14"><strong>Status:</strong> {{ meeting.invitees[0].responseStatus }}</p>
+                      <div class="column" v-if="meeting.invitees?.length > 1">
+                        <span class="font-14"><strong>Attendees:</strong> </span>
+                        <span v-for="att in meeting.invitees.slice(1)" :key="'google att' + att.email"
+                          class="text-body2">
+                          {{ att.email }} - <span
+                            :class="att.responseStatus == 'accepted' ? 'text-green' : 'text-red'">{{
+                              att.responseStatus }}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <p class="font-16">No invitees</p>
+                    </div>
                     <!-- <p class="font-14"><strong>Rescheduled:</strong> {{ meeting.invitees.rescheduled }}</p> -->
                     <!-- Add more fields as needed -->
                     <!-- <p class="font-16">Questions and Answers:</p>
@@ -298,17 +319,24 @@ async function getEventsArr() {
         eventMemberships: [creator],
         name: event.summary,
         uri: event.htmlLink,
+        meetingLink: event.hangoutLink?.replace(/\\/g, ''),
         id: event.id,
+        conferenceSolution: event.conferenceData?.conferenceSolution.name,
         orgStartTime: event.start.dateTime,
         orgEndTime: event.end.dateTime,
         isGoogle: true,
         invitees: event.attendees?.filter((a) => a.self != true) // Saving the response from getInvitees
       }
-      groupedEvents[startDate].push(simplifiedEvent)
+      if (event.eventType != 'focusTime' && event.eventType != 'outOfOffice') {
+        groupedEvents[startDate].push(simplifiedEvent)
+      }
     }
   }
   console.log('new Grop', Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] })))
   schedules.value = Object.keys(groupedEvents).map(date => ({ date, meetings: groupedEvents[date] }))
+}
+function openMeeting(url) {
+  window.open(url, '_blank').focus()
 }
 onMounted(async () => {
   if (authStore.calendlyIntegrated) {
@@ -370,5 +398,22 @@ onMounted(async () => {
   right: 0;
   top: 0;
 
+}
+
+.googleEvent:hover {
+  .eventMeetingLink {
+    height: fit-content;
+    opacity: 0.8;
+  }
+}
+
+.eventMeetingLink {
+  height: 0;
+  opacity: 0;
+  transition-duration: 0.4s;
+
+  &:hover {
+    opacity: 1 !important;
+  }
 }
 </style>
