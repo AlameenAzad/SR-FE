@@ -15,8 +15,13 @@
                 <q-input v-model="email" label="E-mail" lazy-rules color="red" dense dark :rules="[rules.email]" />
               </div>
               <div class="col-12">
-                <q-input type="password" v-model="password" label="Password" color="red" lazy-rules dense dark
-                  :rules="[rules.required]" />
+                <q-input :type="showPassword == true ? 'text' : 'password'" v-model="password" label="Password" color="red"
+                  lazy-rules dense dark :rules="[rules.required]">
+                  <template v-slot:append>
+                    <q-icon :name="showPassword == true ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'" size="xs"
+                      @click="showPassword = !showPassword" class="cursor-pointer"></q-icon>
+                  </template>
+                </q-input>
               </div>
               <div class="col-12 justify-end">
                 <q-btn square label="Sign in" color="red"
@@ -47,7 +52,7 @@ import { rules } from 'src/helper/formRules'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const authStore = useAuthStore()
-
+const showPassword = ref(false)
 let email = ref('')
 let password = ref('')
 if (process.env.DEV) {
