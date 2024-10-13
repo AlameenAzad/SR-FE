@@ -36,7 +36,10 @@
                 </div>
                 <q-tooltip anchor="center right" :offset="[30, 20]" self="center left" class="bg-black">
                   <div v-if="meetingData == meeting.id">
-                    <p class="font-14"><strong>Conference Solution</strong> {{ meeting.conferenceSolution }}</p>
+                    <p class="font-14"><strong>Conference Solution:</strong> {{ meeting.conferenceSolution }}</p>
+                    <p class="font-14" v-if="meeting.description"><strong>Description:</strong> {{ meeting.description
+                      }}
+                    </p>
 
                     <div v-if="meeting.invitees">
                       <!-- <p class="font-16">{{ meeting.invitees.name }}</p> -->
@@ -322,6 +325,7 @@ async function getEventsArr() {
         meetingLink: event.hangoutLink?.replace(/\\/g, ''),
         id: event.id,
         conferenceSolution: event.conferenceData?.conferenceSolution.name,
+        description: event.description,
         orgStartTime: event.start.dateTime,
         orgEndTime: event.end.dateTime,
         isGoogle: true,
